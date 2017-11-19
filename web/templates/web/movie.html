@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie detail</title>
+</head>
+<body>
+    <h3>Movie {{ object.name }} detail</h3>
+    <table border="1">
+        <thead>
+        <tr>
+           <td>Music Contributor</td>
+           <td>Genre</td>
+        </tr>
+        </thead>
+        {% for contributor in object.contributors.all %}
+            <tr>
+                <td><a href="{% url "contributor-detail" name=contributor.name %}">{{ contributor.name }}</a></td>
+                <td><a href="{% url "genre-detail" name=contributor.genre %}">{{ contributor.genre }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

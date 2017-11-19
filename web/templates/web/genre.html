@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genre detail</title>
+</head>
+<body>
+    <h3>Genre {{ object.name }} detail</h3>
+    <table border="1">
+        <thead>
+        <tr>
+           <td>Contributors playing in this genre</td>
+        </tr>
+        </thead>
+        {% for contributor in object.contributors.all %}
+            <tr>
+                <td><a href="{% url "contributor-detail" name=contributor.name %}">{{ contributor.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <br />
+
+    <table style="border: 1">
+        <thead>
+        <tr>
+           <td>Movies with soundtrack in this genre</td>
+        </tr>
+        </thead>
+        {% for movie in object.related_movies %}
+            <tr>
+                <td><a href="{% url "movie-detail" name=movie.name %}">{{ movie.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

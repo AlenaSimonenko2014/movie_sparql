@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contributor detail</title>
+</head>
+<body>
+    <h3>Contributor {{ object.name }} detail</h3>
+    <table border="1">
+        <thead>
+        <tr>
+           <td>Movie</td>
+        </tr>
+        </thead>
+        {% for movie in object.movies.all %}
+            <tr>
+                <td><a href="{% url "movie-detail" name=movie.name %}">{{ movie.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
