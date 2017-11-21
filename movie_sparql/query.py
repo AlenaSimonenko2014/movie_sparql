@@ -2,9 +2,16 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 GET_MOVIE_SOURCE = "http://dbpedia.org/sparql"
 GET_MOVIE_QUERY = """
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?label
-    WHERE { <http://dbpedia.org/resource/%s> rdfs:label ?label }
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/resource/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?name ?bandname where {
+   ?person foaf:name ?name .
+   ?band dbo:bandMember ?person .
+   ?band dbo:genre dbp:%s .
+   ?band foaf:name ?bandname .
+}
 """
 
 
@@ -15,7 +22,7 @@ def get_movie(name: str):
     results = sparql.query().convert()
 
     for result in results["results"]["bindings"]:
-        print(result["label"]["value"])
+        print(result["name"]["value"], '\t\t', result["bandname"]["value"])
 
     return {
         "name": "mimi",
@@ -23,4 +30,4 @@ def get_movie(name: str):
     }
 
 if __name__ == '__main__':
-    get_movie('Alice')
+    get_movie('Punk_rock')
