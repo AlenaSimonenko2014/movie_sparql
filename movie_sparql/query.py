@@ -11,41 +11,41 @@ PREFIX im: <http://imgpedia.dcc.uchile.cl/resource/>
 PREFIX dbp: <http://dbpedia.org/property/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dbo: <http://dbpedia.org/ontology/>
-SELECT ?movieTitle ?movieDate ?musicContributor ?who ?genre ?name
+SELECT ?musicContributor ?contributor_genre ?name_of_contributor ?name ?genre
 {
-# { SERVICE <http://data.linkedmdb.org/sparql>
-#     { SELECT DISTINCT ?musicContributor
-#         WHERE {
-#                 ?movie rdfs:label "Titanic" ;
-#                        imdb:music_contributor ?musicContributorURI .#;
-##                        dcterms:title ?movieTitle ;
-##                        dcterms:date ?movieDate .
-#
-#                 ?musicContributorURI imdb:music_contributor_name ?musicContributor .
-#         }
-#     }
-# }
-  
-#  { SERVICE <http://dbpedia.org/sparql>
-#    { SELECT ?who ?genre
-#      WHERE {
-#        ?who foaf:name ?name .
-#        ?who dbo:genre ?genre .
-#        ?genre rdf:type dbo:MusicGenre
-#        FILTER regex(?name, CONCAT("^", "Metallica", ".*"), "i")
-#
-#      }
-#    }
-#  }
-  
+ { SERVICE <http://data.linkedmdb.org/sparql>
+     { SELECT DISTINCT ?musicContributor 
+        WHERE {
+                 ?movie rdfs:label %s ;
+                        imdb:music_contributor ?musicContributorURI .
+                 ?musicContributorURI imdb:music_contributor_name ?musicContributor .
+
+         }
+     }
+ }
+
   { SERVICE <http://dbpedia.org/sparql>
-    { SELECT ?name
+   { SELECT ?contributor_genre ?name_of_contributor
       WHERE {
-        ?who foaf:name ?name .
-        ?who dbo:genre <http://dbpedia.org/resource/%s> .
+        ?who foaf:name ?name_of_contributor .
+        ?who dbo:genre ?contributor_genre .
+       ?contributor_genre rdf:type dbo:MusicGenre
       }
     }
   }
+
+  { SERVICE <http://dbpedia.org/sparql>
+    { SELECT ?name ?genre
+      WHERE {
+        ?who foaf:name ?name .
+        ?genre rdf:type dbo:MusicGenre.
+        ?who dbo:genre ?genre .#<http://dbpedia.org/resource/Progressive_rock> .
+      }
+    }
+  }
+ FILTER regex(?name_of_contributor, CONCAT("^", ?musicContributor, ".*"), "i")
+ FILTER (?genre=?contributor_genre)
+
 }
 
 """
@@ -58,12 +58,14 @@ def get_movie(name: str):
     results = sparql.query().convert()
 
     for result in results["results"]["bindings"]:
-        print(result["name"]["value"]) #, '\t\t', result["bandname"]["value"])
+        print(result["name"]["value"])#, '\t\t', result["contributor_genre"]["value"],
+             # result["name_of_contributor"]["value"], '\t\t', result["name"]["value"], '\t\t', result["genre"]["value"])
 
     return {
         "name": "mimi",
         "contributors": []
     }
 
+
 if __name__ == '__main__':
-    get_movie('Thrash_metal')
+    get_movie('"Yellow Submarine"')

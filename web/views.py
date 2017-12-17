@@ -16,7 +16,7 @@ class SearchView(FormView):
         """
         If the form is valid, query db and persist data
         """
-        movie_obj = get_movie("Asturias")  # form.data['movie_name'])
+        movie_obj = get_movie('"Yellow Submarine"')  # form.data['movie_name'])
 
         # TODO get_or_create contibutors, genres
 
