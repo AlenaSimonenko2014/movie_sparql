@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 GET_MOVIE_SOURCE = "http://localhost:3030/first_dataset/query"
@@ -39,7 +41,7 @@ SELECT ?musicContributor ?contributor_genre ?name_of_contributor ?name ?genre
       WHERE {
         ?who foaf:name ?name .
         ?genre rdf:type dbo:MusicGenre.
-        ?who dbo:genre ?genre .#<http://dbpedia.org/resource/Progressive_rock> .
+        ?who dbo:genre ?genre .
       }
     }
   }
@@ -53,7 +55,18 @@ LIMIT 100
 """
 
 
-def get_contributors_for_movie(name: str):
+def get_contributors_for_movie(name: str) -> List[Dict]:
+    """
+    Retrieves music contributors of movie with their genres
+    and list of the same genre contributors.
+
+    Returns list of dicts, for example:
+    [{
+        'name': "The Beatles",
+        'genre': "Pop Rock",
+        'same_genre_contributor': "Killers"
+    }, ...]
+    """
     sparql = SPARQLWrapper(GET_MOVIE_SOURCE)
     sparql.setQuery(GET_MOVIE_QUERY % name)
     sparql.setReturnFormat(JSON)
@@ -67,14 +80,11 @@ def get_contributors_for_movie(name: str):
             'genre': result["genre"]["value"],
             'same_genre_contributor': result["name"]["value"]
         })
-        print(result["name"]["value"])#, '\t\t', result["contributor_genre"]["value"],
-             # result["name_of_contributor"]["value"], '\t\t', result["name"]["value"], '\t\t', result["genre"]["value"])
+        print(result["name_of_contributor"]["value"], '\t\t',
+              result["name"]["value"], '\t' * 6,
+              result["contributor_genre"]["value"],
+              result["genre"]["value"])
 
-    # return_list.append({
-    #     'name': "The Beatles",
-    #     'genre': "Pop Rock",
-    #     'same_genre_contributor': "Killers"
-    # })
     return return_list
 
 
