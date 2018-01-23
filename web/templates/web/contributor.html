@@ -16,7 +16,7 @@
         {% for movie in object.movies.all %}
             <tr>
                 <td><a href="{% url "movie-detail" name=movie.name %}">{{ movie.name }}</a></td>
-                <td><a href="{% url "genre-detail" name=object.genre %}">{{ object.genre }}</a></td>
+                <td><a href="{% url "genre-detail" name=object.genre.name %}">{{ object.genre }}</a></td>
             </tr>
         {% endfor %}
     </table>
